@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ConversionDtoIT {
@@ -29,16 +30,13 @@ public class ConversionDtoIT {
     @Test
     public void convert() throws Exception {
         Client client = ClientBuilder.newClient();
-        URI uri = new URI("http://localhost:8080/pg/rs/convertion?from=NOK&to=USD");
+        URI uri = new URI("http://localhost:8080/pg/rs/convertion?from=USD&to=NOK");
         WebTarget target = client.target(uri);
-        Invocation invocation = target.request(MediaType.TEXT_PLAIN).buildGet();
+
+        Invocation invocation = target.request(MediaType.APPLICATION_XML).buildGet();
 
         Response response = invocation.invoke();
-
         String entity = response.readEntity(String.class);
-        System.out.println(entity);
-        System.out.println(response.getStatusInfo());
-        System.out.println();
 
         assertTrue(entity.length() > 0);
     }

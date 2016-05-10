@@ -51,9 +51,35 @@
         </dependency>
 
         <dependency>
-            <groupId>com.googlecode.json-simple</groupId>
-            <artifactId>json-simple</artifactId>
-            <version>1.1.1</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>      <!-- Verified. Selenium -->
+            <artifactId>selenium-java</artifactId>
+            <version>2.53.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>3.0.8.Final</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.main.extras</groupId>                <!-- Verified. Testing fungerer ikke uten-->
+            <artifactId>glassfish-embedded-all</artifactId>
+            <version>4.1.1</version>
+            <scope>test</scope>
         </dependency>
 
 
@@ -61,7 +87,8 @@
         <dependency>
             <groupId>org.jboss.spec.javax.faces</groupId>
             <artifactId>jboss-jsf-api_2.2_spec</artifactId>
-            <scope>provided</scope>                                     <!-- Verified. Updated. Fixed the mvn wildfly:run problem -->
+            <scope>provided
+            </scope>                                     <!-- Verified. Updated. Fixed the mvn wildfly:run problem -->
         </dependency>
         <dependency>
             <groupId>org.jboss.spec.javax.ejb</groupId>
@@ -93,6 +120,30 @@
     <build>
         <finalName>pg</finalName>
         <plugins>
+
+            <plugin>
+                <!--
+                needed to run Integration Tests (*IT.java).
+                 Note: integration tests are run AFTER the war is compiled and packaged,
+                 as so it can be deployed on WildFly.
+
+                 Run with:
+                 mvn verify
+                -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.19.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
@@ -107,6 +158,41 @@
                         </users>
                     </add-user>
                 </configuration>
+                <executions>
+
+                    <!--
+                        for list of Maven phases, see
+
+                        https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#Lifecycle_Reference
+
+                        for Widlfly plugin goals, see
+
+                        https://docs.jboss.org/wildfly/plugins/maven/latest/usage.html
+                    -->
+
+                    <execution>
+                        <id>init</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                            <!--
+                            this starts WildFly asynchronously, ie non-blocking as "run" would do.
+                            When running tests from IDE, can start WildFly with "mvn wildfly:run"
+                             -->
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>shutdown</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>undeploy</goal>
+                            <goal>shutdown</goal>
+                        </goals>
+                    </execution>
+
+                </executions>
             </plugin>
 
             <plugin>
@@ -117,6 +203,8 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+
+
 
         </plugins>
     </build>

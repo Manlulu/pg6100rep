@@ -10,6 +10,7 @@ import java.util.Set;
 
 
 // @ApplicationPath("/rs") will make it fail. Do not use slash here.
+// If you fails to get a connection, try to redeploy.
 @ApplicationPath("rs")
 public class ApplicationConfig extends Application {
 
