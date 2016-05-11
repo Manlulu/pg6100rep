@@ -115,6 +115,13 @@
             <artifactId>jboss-servlet-api_3.1_spec</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>1.57</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -203,7 +210,6 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-
 
 
         </plugins>

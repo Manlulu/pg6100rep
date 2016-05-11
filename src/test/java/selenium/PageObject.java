@@ -35,11 +35,11 @@ public class PageObject {
     public void clickButton(String id){
         WebElement webElement = webDriver.findElement(By.id(id));
         webElement.click();
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 //        waitForPageToLoad();
     }
 
