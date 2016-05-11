@@ -49,6 +49,17 @@ public class WebPageIT {
         );
         wireMockServer.start();
 
+        String body = new Scanner(WebPageIT.class.getResourceAsStream("/body-v1-NASDAQQuotes.asmx.xml"), "UTF-8")
+                .useDelimiter("\\A") //matches the beginning of input
+                .next();
+
+        wireMockServer.stubFor(
+                post(urlMatching("/v1/NASDAQQuotes.asmx"))
+                        .withRequestBody(matching(".*ListMarketCenters.*"))
+                        .willReturn(aResponse()
+                                .withHeader("Content-Type","text/xml; charset=utf-8")
+                                .withHeader("Content-Length",""+body.length())
+                                .withBody(body)));
     }
     @AfterClass
     public static void tearDown() {
@@ -101,7 +112,6 @@ public class WebPageIT {
         assertTrue(pageObject.checkFromXmlElement("to"));   // For å teste click uten wait for page.
     }
 
-    @Ignore
     @Test
     public void wireMockTest() throws Exception {
         int eur = 42;

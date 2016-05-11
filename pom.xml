@@ -129,14 +129,39 @@
         <plugins>
 
             <plugin>
-                <!--
-                needed to run Integration Tests (*IT.java).
-                 Note: integration tests are run AFTER the war is compiled and packaged,
-                 as so it can be deployed on WildFly.
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
 
-                 Run with:
-                 mvn verify
-                -->
+            <plugin>
+                <groupId>org.jvnet.jax-ws-commons</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlUrls>
+                                <wsdlUrl>http://ws.nasdaqdod.com/v1/NASDAQQuotes.asmx?WSDL</wsdlUrl>
+                            </wsdlUrls>
+                            <keep>true</keep>
+                            <vmArgs>
+                                <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+                            </vmArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.19.1</version>
@@ -149,7 +174,6 @@
                     </execution>
                 </executions>
             </plugin>
-
 
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
@@ -188,6 +212,12 @@
                              -->
                             <goal>deploy</goal>
                         </goals>
+                        <configuration>
+                            <javaOpts>
+                                <!-- Make it point to WireMock -->
+                                <javaOpt>-DnasdaqAddress=localhost:8099</javaOpt>
+                            </javaOpts>
+                        </configuration>
                     </execution>
 
                     <execution>
@@ -201,17 +231,6 @@
 
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-
-
         </plugins>
     </build>
 
